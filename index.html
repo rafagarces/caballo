@@ -238,46 +238,23 @@
         } catch (e) { console.error("SVG error:", e); }
       }
 
-      // Audio
-      const AUDIO = ["01","02","05"].map(n => `./audio/${n}.ogg`);
+      // Audio — OGG para Chrome/Firefox, MP3 para Safari/iOS
+      const _a = new Audio();
+      const _ext = _a.canPlayType("audio/ogg; codecs=vorbis") ? "ogg" : "mp3";
+      const AUDIO = ["01","02","05"].map(n => `./audio/${n}.${_ext}`);
       const audioCache = {};
       let ctx = null;
-
-      function synth() {
-        const now = ctx.currentTime;
-        const osc = ctx.createOscillator();
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(820, now);
-        osc.frequency.exponentialRampToValueAtTime(280, now + 0.45);
-        osc.frequency.exponentialRampToValueAtTime(480, now + 0.72);
-        osc.frequency.exponentialRampToValueAtTime(180, now + 1.05);
-        const lfo = ctx.createOscillator();
-        lfo.frequency.value = 7 + Math.random() * 4;
-        const lfoG = ctx.createGain();
-        lfoG.gain.value = 35;
-        lfo.connect(lfoG);
-        lfoG.connect(osc.frequency);
-        const env = ctx.createGain();
-        env.gain.setValueAtTime(0.28, now);
-        env.gain.exponentialRampToValueAtTime(0.01, now + 1.1);
-        osc.connect(env);
-        env.connect(ctx.destination);
-        osc.start(now); lfo.start(now);
-        osc.stop(now + 1.1); lfo.stop(now + 1.1);
-      }
 
       async function playNeigh() {
         try {
           if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
           if (ctx.state === "suspended") await ctx.resume();
           const url = AUDIO[Math.floor(Math.random() * AUDIO.length)];
-          try {
-            if (!audioCache[url]) {
-              const res = await fetch(url);
-              if (!res.ok) throw new Error(res.status);
-              audioCache[url] = await ctx.decodeAudioData(await res.arrayBuffer());
-            }
-          } catch { synth(); return; }
+          if (!audioCache[url]) {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(res.status);
+            audioCache[url] = await ctx.decodeAudioData(await res.arrayBuffer());
+          }
           const src = ctx.createBufferSource();
           src.buffer = audioCache[url];
           src.playbackRate.value = 0.82 + Math.random() * 0.36;
