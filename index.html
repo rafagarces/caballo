@@ -16,15 +16,16 @@
         overflow: hidden;
       }
 
-      body::after {
-        content: "";
+      #texture-overlay {
         position: fixed;
         inset: 0;
-        z-index: 50;
+        z-index: 4;
         pointer-events: none;
-        opacity: 0.18;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
-        background-size: 200px 200px;
+        opacity: 0.22;
+        mix-blend-mode: overlay;
+        background-size: cover;
+        background-position: center;
+        transition: background-image 0.3s ease;
       }
 
       .poster {
@@ -117,6 +118,7 @@
     </style>
   </head>
   <body>
+    <div id="texture-overlay"></div>
     <main class="poster">
       <div class="horse-wrap" id="horse" role="button" tabindex="0" aria-label="Toca el caballo para hacerlo relinchar"></div>
       <div class="text-overlay">
@@ -155,15 +157,27 @@
         });
       }
 
-      // Color pairs: [illustration fg, body bg]
+      // Color triples: [illustration fg, gradient start, gradient end]
       const COLORS = [
-        ["#E8307A", "#CC1C1C"],
-        ["#F57C00", "#E64A19"],
-        ["#FBC02D", "#F9A825"],
-        ["#43A047", "#2E7D32"],
-        ["#1E88E5", "#1565C0"],
-        ["#8E24AA", "#6A1B9A"],
+        ["#E8307A", "#CC1C1C", "#FF6B9D"],
+        ["#F57C00", "#E64A19", "#FFB74D"],
+        ["#FBC02D", "#F9A825", "#FFF176"],
+        ["#43A047", "#2E7D32", "#80CBC4"],
+        ["#1E88E5", "#1565C0", "#B3E5FC"],
+        ["#8E24AA", "#6A1B9A", "#F8BBD0"],
       ];
+
+      const TEXTURES = ["./texture/Grain.png", "./texture/Noise - 2.png"];
+      const textureEl = document.getElementById("texture-overlay");
+      let texIdx = -1;
+
+      function applyTheme(ci) {
+        const [, c1, c2] = COLORS[ci];
+        const angle = [135, 160, 45, 200, 315, 70][Math.floor(Math.random() * 6)];
+        document.body.style.background = `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 100%)`;
+        texIdx = pickOther(texIdx, TEXTURES.length);
+        textureEl.style.backgroundImage = `url("${TEXTURES[texIdx]}")`;
+      }
       let colorIdx = 0;
 
       // SVG illustrations
@@ -263,7 +277,7 @@
         playNeigh();
         svgIdx = pickOther(svgIdx, SVGS.length);
         colorIdx = pickOther(colorIdx, COLORS.length);
-        document.body.style.background = COLORS[colorIdx][1];
+        applyTheme(colorIdx);
         loadSVG(svgIdx, colorIdx);
       }
 
@@ -273,6 +287,7 @@
       // Initial load + preload rest
       (async () => {
         svgIdx = pickOther(-1, SVGS.length);
+        applyTheme(colorIdx);
         await loadSVG(svgIdx, colorIdx);
         scrambleFonts();
         SVGS.forEach((url, i) => { if (i !== svgIdx) fetchSVG(url); });
