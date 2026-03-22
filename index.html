@@ -168,16 +168,13 @@
         ["#8E24AA", "#6A1B9A", "#F8BBD0"],
       ];
 
-      const TEXTURES = ["./texture/Grain.png", "./texture/Noise - 2.png"];
       const textureEl = document.getElementById("texture-overlay");
-      let texIdx = -1;
+      textureEl.style.backgroundImage = `url("./texture/Grain.png")`;
 
       function applyTheme(ci) {
         const [, c1, c2] = COLORS[ci];
         const angle = [135, 160, 45, 200, 315, 70][Math.floor(Math.random() * 6)];
         document.body.style.background = `linear-gradient(${angle}deg, ${c1} 0%, ${c2} 100%)`;
-        texIdx = pickOther(texIdx, TEXTURES.length);
-        textureEl.style.backgroundImage = `url("${TEXTURES[texIdx]}")`;
       }
       let colorIdx = 0;
 
