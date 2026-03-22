@@ -169,6 +169,7 @@
         text-transform: uppercase;
       }
       .rec-btn:hover { opacity: 0.6; }
+      #rec-ui[data-state="idle"] .rec-btn:hover { opacity: 1; }
 
       /* separador entre botones del estado preview */
       .rec-sep {
@@ -179,38 +180,11 @@
         flex-shrink: 0;
       }
 
-      /* countdown ring */
-      .rec-countdown-wrap {
-        position: relative;
-        width: 2rem;
-        height: 2rem;
-      }
-      .rec-countdown-wrap svg {
-        width: 100%;
-        height: 100%;
-        transform: rotate(-90deg);
-      }
-      .rec-countdown-wrap circle {
-        fill: none;
-        stroke-width: 3;
-        stroke-linecap: round;
-      }
-      #rec-ring-track { stroke: rgba(13,8,8,0.2); }
-      #rec-ring-fill  {
-        stroke: #0d0808;
-        stroke-dasharray: 100;
-        stroke-dashoffset: 0;
-        transition: stroke-dashoffset 1s linear;
-      }
+      /* countdown number */
       .rec-countdown-num {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
+        font-size: 1em;
         font-weight: 700;
-        color: #fff;
+        color: #0d0808;
       }
 
       @keyframes rec-pulse {
@@ -375,21 +349,35 @@
       const audioCache = {};
       let ctx = null;
 
-      async function playNeigh() {
+      function purgeBadUrl(url) {
+        const idx = AUDIO.indexOf(url);
+        if (idx !== -1) AUDIO.splice(idx, 1);
+        // Borrar también de la tabla DB para que no vuelva en próximas cargas
+        if (sb && url.includes(SB_URL)) {
+          sb.from("recordings").delete().eq("url", url).then(() => {});
+        }
+      }
+
+      async function playNeigh(retries = 3) {
+        if (AUDIO.length === 0) return;
         try {
           if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
           if (ctx.state === "suspended") await ctx.resume();
           const url = AUDIO[Math.floor(Math.random() * AUDIO.length)];
           if (!audioCache[url]) {
             const res = await fetch(url, { mode: "cors" });
-            if (!res.ok) throw new Error(res.status);
+            if (!res.ok) {
+              purgeBadUrl(url);
+              if (retries > 0) playNeigh(retries - 1);
+              return;
+            }
             try {
               audioCache[url] = await ctx.decodeAudioData(await res.arrayBuffer());
             } catch {
               // Grabación de usuario: formato no decodificable por AudioContext → reproducir directo
               const el = new Audio(url);
               el.crossOrigin = "anonymous";
-              el.play().catch(() => {});
+              el.play().catch(() => { purgeBadUrl(url); if (retries > 0) playNeigh(retries - 1); });
               return;
             }
           }
@@ -542,7 +530,7 @@
       function renderIdle() {
         setRecState("idle", `
           <div class="rec-row">
-            <button class="rec-btn" id="rec-start">Grábate relinchando</button>
+            <button class="rec-btn" id="rec-start">Relincha</button>
           </div>`);
         document.getElementById("rec-start").addEventListener("click", startRecording);
       }
@@ -552,15 +540,8 @@
         setRecState("recording", `
           <div class="rec-row">
             <span>Grabando…</span>
-            <div class="rec-countdown-wrap">
-              <svg viewBox="0 0 36 36">
-                <circle id="rec-ring-track" cx="18" cy="18" r="15.9" stroke-width="3" fill="none" stroke="rgba(13,8,8,0.2)"/>
-                <circle id="rec-ring-fill"  cx="18" cy="18" r="15.9" stroke-width="3" fill="none"
-                  stroke="#0d0808" stroke-linecap="round" stroke-dasharray="100"
-                  stroke-dashoffset="${pct}" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s linear"/>
-              </svg>
-              <span class="rec-countdown-num">${seconds}</span>
-            </div>
+            <span class="rec-sep"></span>
+            <span class="rec-countdown-num">${seconds}</span>
           </div>`);
       }
 
