@@ -7,38 +7,12 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
     />
     <title>El año del caballo y otras sustancias</title>
-    <style>
-      @font-face {
-        font-family: "ApfelGrotezk";
-        font-weight: 400;
-        font-style: normal;
-        font-display: swap;
-        src:
-          url("./fonts/ApfelGrotezk-Regular.woff2") format("woff2"),
-          url("./fonts/ApfelGrotezk-Regular.woff") format("woff"),
-          url("./fonts/ApfelGrotezk-Regular.otf") format("opentype");
-      }
-      @font-face {
-        font-family: "ApfelGrotezk";
-        font-weight: 500;
-        font-style: normal;
-        font-display: swap;
-        src:
-          url("./fonts/ApfelGrotezk-Mittel.woff2") format("woff2"),
-          url("./fonts/ApfelGrotezk-Mittel.woff") format("woff"),
-          url("./fonts/ApfelGrotezk-Mittel.otf") format("opentype");
-      }
-      @font-face {
-        font-family: "ApfelGrotezk";
-        font-weight: 900;
-        font-style: normal;
-        font-display: swap;
-        src:
-          url("./fonts/ApfelGrotezk-Fett.woff2") format("woff2"),
-          url("./fonts/ApfelGrotezk-Fett.woff") format("woff"),
-          url("./fonts/ApfelGrotezk-Fett.otf") format("opentype");
-      }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       *,
       *::before,
@@ -138,22 +112,23 @@
       }
 
       .event-info {
-        font-family: "ApfelGrotezk", sans-serif;
+        font-family: "Inter", sans-serif;
         font-weight: 400;
         font-style: normal;
-        font-size: clamp(0.7rem, 3vw, 1.4rem);
+        font-size: clamp(0.7rem, 3.5vw, 1.2rem);
         color: #0d0808;
-        line-height: 1.4;
-        margin-bottom: 0.3em;
+        line-height: 1.45;
+        margin-bottom: 0.25em;
       }
 
       .main-title {
-        font-family: "ApfelGrotezk", sans-serif;
-        font-weight: 500;
+        font-family: "Inter", sans-serif;
+        font-weight: 700;
         font-style: normal;
-        font-size: clamp(2.4rem, 13vw, 8rem);
+        font-size: clamp(2.8rem, 12.5vw, 8rem);
         color: #0d0808;
-        line-height: 1;
+        line-height: 0.95;
+        letter-spacing: -0.02em;
       }
     </style>
   </head>
