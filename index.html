@@ -10,6 +10,26 @@
     <style>
       @font-face {
         font-family: "ApfelGrotezk";
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+        src:
+          url("./fonts/ApfelGrotezk-Regular.woff2") format("woff2"),
+          url("./fonts/ApfelGrotezk-Regular.woff") format("woff"),
+          url("./fonts/ApfelGrotezk-Regular.otf") format("opentype");
+      }
+      @font-face {
+        font-family: "ApfelGrotezk";
+        font-weight: 500;
+        font-style: normal;
+        font-display: swap;
+        src:
+          url("./fonts/ApfelGrotezk-Mittel.woff2") format("woff2"),
+          url("./fonts/ApfelGrotezk-Mittel.woff") format("woff"),
+          url("./fonts/ApfelGrotezk-Mittel.otf") format("opentype");
+      }
+      @font-face {
+        font-family: "ApfelGrotezk";
         font-weight: 900;
         font-style: normal;
         font-display: swap;
@@ -114,39 +134,26 @@
         width: 100%;
         z-index: 2;
         pointer-events: none;
-        padding: 0 4% 3.5%;
-      }
-
-      .title-row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        gap: 0.4em;
-        width: 100%;
-      }
-
-      .main-title {
-        font-family: "ApfelGrotezk", sans-serif;
-        font-size: clamp(1.6rem, 5.5vw, 4.2rem);
-        color: #0d0808;
-        line-height: 1;
-        text-transform: uppercase;
-        font-style: normal;
-      }
-
-      .subtitle {
-        font-family: "ApfelGrotezk", sans-serif;
-        font-style: normal;
-        font-size: clamp(0.75rem, 2.2vw, 1.7rem);
-        color: rgba(13, 8, 8, 0.65);
+        padding: 0 5% 5%;
       }
 
       .event-info {
         font-family: "ApfelGrotezk", sans-serif;
+        font-weight: 400;
         font-style: normal;
-        font-size: clamp(0.65rem, 1.8vw, 1.3rem);
-        color: rgba(13, 8, 8, 0.45);
-        margin-top: 0.4em;
+        font-size: clamp(0.7rem, 3vw, 1.4rem);
+        color: #0d0808;
+        line-height: 1.4;
+        margin-bottom: 0.3em;
+      }
+
+      .main-title {
+        font-family: "ApfelGrotezk", sans-serif;
+        font-weight: 500;
+        font-style: normal;
+        font-size: clamp(2.4rem, 13vw, 8rem);
+        color: #0d0808;
+        line-height: 1;
       }
     </style>
   </head>
@@ -164,14 +171,12 @@
       </div>
 
       <div class="text-overlay">
-        <div class="title-row">
-          <h1 class="main-title">El año del caballo</h1>
-          <span class="subtitle">y otras sustancias</span>
-        </div>
         <p class="event-info">
-          19 de Abril &nbsp;·&nbsp; A partir de las 13&thinsp;h. &nbsp;·&nbsp;
-          El Monterrey
+          19 de Abril.<br />
+          A partir de las 13 h.<br />
+          El Monterrey.
         </p>
+        <h1 class="main-title">El año del caballo y otras sustancias</h1>
       </div>
     </main>
 
