@@ -93,6 +93,13 @@
         font-style: normal;
       }
 
+      @font-face {
+        font-family: "HelveticaNeue";
+        src: url("./fonts/HelveticaNeue.ttc") format("collection");
+        font-weight: 400;
+        font-style: normal;
+      }
+
       .main-title {
         font-size: clamp(2.8rem, 12.5vw, 8rem);
         color: #0d0808;
@@ -124,8 +131,8 @@
 
       // Mixed-font h1: each letter randomly Neue Pixel Grotesk or Helvetica Neue Medium
       const TITLE_FONTS = [
-        { family: '"Neue Pixel Grotesk"',                         weight: '400' },
-        { family: '"Helvetica Neue", "Arial", sans-serif',        weight: '500' },
+        { family: "Neue Pixel Grotesk", weight: "400" },
+        { family: "HelveticaNeue",      weight: "400" },
       ];
       const h1 = document.querySelector(".main-title");
       const titleText = h1.textContent.trim();
