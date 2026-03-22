@@ -108,7 +108,7 @@
       }
 
       .main-title {
-        font-size: clamp(2.8rem, 12.5vw, 8rem);
+        font-size: 14vw; /* overridden by fitTitle() JS */
         color: #0d0808;
         line-height: 0.92;
         letter-spacing: -0.02em;
@@ -161,6 +161,33 @@
           h1.appendChild(span);
         });
       }
+
+      // Fit H1 font-size so the widest word fills the container width exactly
+      const probe = document.createElement("span");
+      probe.style.cssText = "position:absolute;visibility:hidden;white-space:nowrap;pointer-events:none;font-weight:400;letter-spacing:-0.02em;text-transform:uppercase;";
+      document.body.appendChild(probe);
+
+      async function fitTitle() {
+        await document.fonts.ready;
+        const words  = titleText.toUpperCase().split(" ");
+        const containerW = h1.offsetWidth;
+        let lo = 8, hi = 600;
+        for (let i = 0; i < 30; i++) {
+          const mid = (lo + hi) / 2;
+          probe.style.fontSize = mid + "px";
+          const maxW = Math.max(...words.flatMap(w =>
+            TITLE_FONTS.map(f => {
+              probe.style.fontFamily = f.family;
+              probe.textContent = w;
+              return probe.offsetWidth;
+            })
+          ));
+          if (maxW <= containerW) lo = mid; else hi = mid;
+        }
+        h1.style.fontSize = lo + "px";
+      }
+
+      window.addEventListener("resize", fitTitle);
 
       // Color triples: [illustration fg, gradient start, gradient end]
       const COLORS = [
@@ -359,6 +386,7 @@
         applyTheme(colorIdx);
         await loadSVG(svgIdx, colorIdx);
         scrambleFonts();
+        fitTitle();
         SVGS.forEach((url, i) => { if (i !== svgIdx) fetchSVG(url); });
       })();
     </script>
