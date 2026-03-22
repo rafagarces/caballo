@@ -86,14 +86,23 @@
         margin-bottom: 1em;
       }
 
+      @font-face {
+        font-family: "Neue Pixel Grotesk";
+        src: url("./fonts/Neue Pixel Grotesk.ttf") format("truetype");
+        font-weight: 400;
+        font-style: normal;
+      }
+
       .main-title {
-        font-family: "Inter", sans-serif;
-        font-weight: 700;
         font-size: clamp(2.8rem, 12.5vw, 8rem);
         color: #0d0808;
         line-height: 1;
         letter-spacing: -0.02em;
         margin-left: -0.05em;
+      }
+
+      .main-title span {
+        display: inline;
       }
     </style>
   </head>
@@ -112,6 +121,27 @@
 
     <script>
       const horseWrap = document.getElementById("horse");
+
+      // Mixed-font h1: each letter randomly Neue Pixel Grotesk or Helvetica Neue Medium
+      const TITLE_FONTS = [
+        { family: '"Neue Pixel Grotesk"',                         weight: '400' },
+        { family: '"Helvetica Neue", "Arial", sans-serif',        weight: '500' },
+      ];
+      const h1 = document.querySelector(".main-title");
+      const titleText = h1.textContent.trim();
+
+      function scrambleFonts() {
+        h1.innerHTML = "";
+        [...titleText].forEach(ch => {
+          if (ch === " ") { h1.appendChild(document.createTextNode(" ")); return; }
+          const f = TITLE_FONTS[Math.floor(Math.random() * 2)];
+          const span = document.createElement("span");
+          span.textContent = ch;
+          span.style.fontFamily = f.family;
+          span.style.fontWeight = f.weight;
+          h1.appendChild(span);
+        });
+      }
 
       // Color pairs: [illustration fg, body bg]
       const COLORS = [
@@ -217,6 +247,7 @@
         void horseWrap.offsetWidth;
         horseWrap.classList.add("neigh");
         horseWrap.addEventListener("animationend", () => horseWrap.classList.remove("neigh"), { once: true });
+        scrambleFonts();
         playNeigh();
         svgIdx = pickOther(svgIdx, SVGS.length);
         colorIdx = pickOther(colorIdx, COLORS.length);
@@ -231,6 +262,7 @@
       (async () => {
         svgIdx = pickOther(-1, SVGS.length);
         await loadSVG(svgIdx, colorIdx);
+        scrambleFonts();
         SVGS.forEach((url, i) => { if (i !== svgIdx) fetchSVG(url); });
       })();
     </script>
