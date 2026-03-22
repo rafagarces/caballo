@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+    <title>El año del caballo y otras sustancias</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #cc1c1c;
+        overflow: hidden;
+      }
+
+      /* grain texture — siempre visible, sin mix-blend-mode */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        pointer-events: none;
+        opacity: 0.18;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.80' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
+        background-size: 200px 200px;
+      }
+
+      .poster {
+        width: 100%;
+        max-width: 1024px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .horse-wrap {
+        position: relative;
+        width: 100%;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
+      }
+
+      .horse-wrap svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        overflow: visible;
+        transform-origin: 50% 52%;
+      }
+
+      @keyframes horseNeigh {
+        0% {
+          transform: rotate(0deg) translateY(0);
+        }
+        10% {
+          transform: rotate(-3deg) translateY(-6px);
+        }
+        28% {
+          transform: rotate(4deg) translateY(-18px);
+        }
+        44% {
+          transform: rotate(-2.5deg) translateY(-10px);
+        }
+        60% {
+          transform: rotate(2.5deg) translateY(-5px);
+        }
+        75% {
+          transform: rotate(-1deg) translateY(-2px);
+        }
+        88% {
+          transform: rotate(0.5deg) translateY(-1px);
+        }
+        100% {
+          transform: rotate(0deg) translateY(0);
+        }
+      }
+
+      .horse-wrap.neigh svg {
+        animation: horseNeigh 0.9s ease-in-out;
+      }
+
+      /* ── Text overlay ── */
+      .text-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 2;
+        pointer-events: none;
+        padding: 0 4% 3.5%;
+      }
+
+      .title-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.4em;
+        width: 100%;
+      }
+
+      .main-title {
+        font-family: "Abril Fatface";
+        font-size: clamp(1.6rem, 5.5vw, 4.2rem);
+        color: #0d0808;
+        line-height: 1;
+        text-transform: uppercase;
+      }
+
+      .subtitle {
+        font-family: "Libre Baskerville", serif;
+        font-style: italic;
+        font-size: clamp(0.75rem, 2.2vw, 1.7rem);
+        color: rgba(13, 8, 8, 0.65);
+      }
+
+      .event-info {
+        font-family: "Libre Baskerville", serif;
+        font-size: clamp(0.65rem, 1.8vw, 1.3rem);
+        color: rgba(13, 8, 8, 0.45);
+        margin-top: 0.4em;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="poster">
+      <div
+        class="horse-wrap"
+        id="horse"
+        role="button"
+        tabindex="0"
+        aria-label="Toca el caballo para hacerlo relinchar"
+      >
+        <!--
+      viewBox 0 0 450 800 — same 9:16 as poster.
+      LEGS are drawn as <line> elements with x endpoints at ±3000,
+      far beyond any viewport. The SVG overflow:visible + body overflow:clip
+      combo clips them at the screen edge, making them appear to extend
+      "from edge to edge" through the centered horse body.
+      Body + head are drawn ON TOP of the legs.
+    -->
+        <svg
+          viewBox="0 0 450 800"
+          xmlns="http://www.w3.org/2000/svg"
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden="true"
+        >
+          <!--
+        REDISEÑO BASADO EN WHISTLEJACKET (Stubbs).
+        Caballo de perfil, encabritado, mirando a la derecha.
+        Orden de dibujo:
+          1. Cola
+          2. Trasera lejana  (detrás del cuerpo)
+          3. Trasera cercana (detrás del cuerpo)
+          4. Cuerpo          (tapa bases de patas traseras)
+          5. Delantera lejana
+          6. Delantera cercana  ← patas DOBLADAS: antebrazo hacia arriba + caña colgando
+          7. Cuello
+          8. Cabeza + oreja + cara
+          9. Líneas de detalle
+      -->
+
+          <!-- ── COLA — fluye desde la grupa hacia abajo-izquierda ── -->
+          <path
+            fill="none"
+            stroke="#E8307A"
+            stroke-width="22"
+            stroke-linecap="round"
+            d="M 118,576 C 80,604 55,648 44,694 C 33,736 38,764 36,780"
+          />
+          <path
+            fill="none"
+            stroke="#E8307A"
+            stroke-width="14"
+            stroke-linecap="round"
+            d="M 110,594 C 65,628 40,674 28,718 C 16,758 22,780 18,790"
+          />
+          <path
+            fill="none"
+            stroke="#E8307A"
+            stroke-width="9"
+            stroke-linecap="round"
+            d="M 103,612 C 52,648 28,698 18,742 C 8,778 14,792 10,798"
+          />
+
+          <!-- ── TRASERA LEJANA — grupa(128,578) → corvejón(115,660) → casco(104,738) ── -->
+          <path
+            fill="#E8307A"
+            d="M 87,571 A 42 42 0 0 1 170,585 L 127,664 L 103,658 Z"
+          />
+          <ellipse
+            cx="115"
+            cy="661"
+            rx="17"
+            ry="11"
+            transform="rotate(12 115 661)"
+            fill="#E8307A"
+          />
+          <line
+            x1="115"
+            y1="661"
+            x2="104"
+            y2="738"
+            stroke="#E8307A"
+            stroke-width="12"
+            stroke-linecap="round"
+          />
+
+          <!-- ── TRASERA CERCANA — grupa(165,562) → corvejón(175,652) → casco(182,738) ── -->
+          <path
+            fill="#E8307A"
+            d="M 111,568 A 54 54 0 0 1 219,556 L 191,650 L 159,654 Z"
+          />
+          <ellipse
+            cx="175"
+            cy="652"
+            rx="21"
+            ry="14"
+            transform="rotate(-5 175 652)"
+            fill="#E8307A"
+          />
+          <line
+            x1="175"
+            y1="652"
+            x2="182"
+            y2="738"
+            stroke="#E8307A"
+            stroke-width="16"
+            stroke-linecap="round"
+          />
+
+          <!-- ── CUERPO — gran oval inclinado, grupa izquierda / cruz derecha ── -->
+          <path
+            fill="#E8307A"
+            d="
+        M 280,285
+        C 320,268 358,292 368,348
+        C 378,400 372,468 348,520
+        C 324,556 285,582 242,596
+        C 200,608 158,604 126,582
+        C 100,560 90,524 92,482
+        C 94,444 105,405 126,372
+        C 150,338 188,308 228,298
+        C 252,292 267,288 280,285
+        Z
+      "
+          />
+
+          <!-- ── DELANTERA LEJANA (doblada) — hombro(325,450) → carpo(448,370) → caña↓(462,515) ── -->
+          <path
+            fill="#E8307A"
+            d="M 347,484 A 40 40 0 0 1 303,416 L 443,362 L 454,378 Z"
+          />
+          <ellipse
+            cx="448"
+            cy="370"
+            rx="20"
+            ry="12"
+            transform="rotate(-12 448 370)"
+            fill="#E8307A"
+          />
+          <line
+            x1="448"
+            y1="370"
+            x2="462"
+            y2="515"
+            stroke="#E8307A"
+            stroke-width="11"
+            stroke-linecap="round"
+          />
+
+          <!-- ── DELANTERA CERCANA (doblada) — hombro(338,432) → carpo(460,345) → caña↓(476,498) ── -->
+          <path
+            fill="#E8307A"
+            d="M 368,474 A 52 52 0 0 1 308,390 L 453,335 L 467,355 Z"
+          />
+          <ellipse
+            cx="460"
+            cy="345"
+            rx="26"
+            ry="14"
+            transform="rotate(-15 460 345)"
+            fill="#E8307A"
+          />
+          <line
+            x1="460"
+            y1="345"
+            x2="476"
+            y2="498"
+            stroke="#E8307A"
+            stroke-width="14"
+            stroke-linecap="round"
+          />
+
+          <!-- ── CUELLO — arco largo desde la cruz hasta la cabeza ── -->
+          <path
+            fill="#E8307A"
+            d="
+        M 260,290
+        C 268,248 305,208 342,168
+        L 392,174
+        C 358,218 322,255 300,298
+        Z
+      "
+          />
+
+          <!-- ── CABEZA — elipse horizontal, morro apuntando derecha ── -->
+          <ellipse
+            cx="398"
+            cy="178"
+            rx="105"
+            ry="43"
+            transform="rotate(-20 398 178)"
+            fill="#E8307A"
+          />
+
+          <!-- ── OREJA ── -->
+          <path
+            fill="#E8307A"
+            d="
+        M 338,150 L 350,105 L 374,136
+        C 370,150 360,156 350,156
+        C 341,156 338,152 338,150 Z
+      "
+          />
+
+          <!-- Ojo -->
+          <circle cx="355" cy="166" r="13" fill="#CC1C1C" />
+          <circle cx="355" cy="166" r="5" fill="#E8307A" />
+
+          <!-- Ollares -->
+          <ellipse
+            cx="470"
+            cy="172"
+            rx="12"
+            ry="8"
+            transform="rotate(-20 470 172)"
+            fill="#CC1C1C"
+          />
+
+          <!-- Boca tonta — mandíbula + cavidad + dientes + lengua -->
+          <ellipse
+            cx="460"
+            cy="188"
+            rx="25"
+            ry="15"
+            transform="rotate(-20 460 188)"
+            fill="#E8307A"
+          />
+          <ellipse
+            cx="460"
+            cy="189"
+            rx="18"
+            ry="10"
+            transform="rotate(-20 460 189)"
+            fill="#CC1C1C"
+          />
+          <rect
+            x="450"
+            y="180"
+            width="7"
+            height="13"
+            rx="2"
+            fill="#E8307A"
+            transform="rotate(-20 450 180)"
+          />
+          <rect
+            x="459"
+            y="178"
+            width="7"
+            height="13"
+            rx="2"
+            fill="#E8307A"
+            transform="rotate(-20 459 178)"
+          />
+          <rect
+            x="468"
+            y="177"
+            width="6"
+            height="12"
+            rx="2"
+            fill="#E8307A"
+            transform="rotate(-20 468 177)"
+          />
+          <ellipse
+            cx="460"
+            cy="197"
+            rx="9"
+            ry="6"
+            transform="rotate(-20 460 197)"
+            fill="#CC1C1C"
+            opacity="0.85"
+          />
+
+          <!-- LÍNEA DE VIENTRE -->
+          <path
+            fill="none"
+            stroke="#CC1C1C"
+            stroke-width="5.5"
+            stroke-linecap="round"
+            d="M 145,578 C 188,598 238,602 278,592"
+          />
+          <!-- LÍNEA DE CRUZ/HOMBRO -->
+          <path
+            fill="none"
+            stroke="#CC1C1C"
+            stroke-width="5.5"
+            stroke-linecap="round"
+            d="M 272,338 C 290,358 298,380 295,404"
+          />
+        </svg>
+      </div>
+
+      <div class="text-overlay">
+        <div class="title-row">
+          <h1 class="main-title">El año del caballo</h1>
+          <span class="subtitle">y otras sustancias</span>
+        </div>
+        <p class="event-info">
+          19 de Abril &nbsp;·&nbsp; A partir de las 13&thinsp;h. &nbsp;·&nbsp;
+          El Monterrey
+        </p>
+      </div>
+    </main>
+
+    <script>
+      const AUDIO_FILES = ["00", "01", "02", "03", "04", "05"].map(
+        (n) => `./audio/${n}.ogg`,
+      );
+      const audioCache = {};
+      let audioCtx = null;
+      const horseWrap = document.getElementById("horse");
+
+      /* Synthesised fallback — fires when OGG fetch fails (e.g. file:// protocol) */
+      function synthesiseNeigh() {
+        const ctx = audioCtx,
+          now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(820, now);
+        osc.frequency.exponentialRampToValueAtTime(280, now + 0.45);
+        osc.frequency.exponentialRampToValueAtTime(480, now + 0.72);
+        osc.frequency.exponentialRampToValueAtTime(180, now + 1.05);
+
+        const lfo = ctx.createOscillator();
+        lfo.frequency.value = 7 + Math.random() * 4;
+        const lfoGain = ctx.createGain();
+        lfoGain.gain.value = 35;
+        lfo.connect(lfoGain);
+        lfoGain.connect(osc.frequency);
+
+        const env = ctx.createGain();
+        env.gain.setValueAtTime(0.28, now);
+        env.gain.exponentialRampToValueAtTime(0.01, now + 1.1);
+        osc.connect(env);
+        env.connect(ctx.destination);
+        osc.start(now);
+        lfo.start(now);
+        osc.stop(now + 1.1);
+        lfo.stop(now + 1.1);
+      }
+
+      async function playRoboticNeigh() {
+        try {
+          if (!audioCtx)
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          if (audioCtx.state === "suspended") await audioCtx.resume();
+
+          const url =
+            AUDIO_FILES[Math.floor(Math.random() * AUDIO_FILES.length)];
+          console.log("🐴 playing:", url);
+
+          let buffer;
+          try {
+            if (!audioCache[url]) {
+              const res = await fetch(url);
+              if (!res.ok) throw new Error(`HTTP ${res.status}`);
+              audioCache[url] = await audioCtx.decodeAudioData(
+                await res.arrayBuffer(),
+              );
+            }
+            buffer = audioCache[url];
+          } catch (fetchErr) {
+            console.warn(
+              "Fetch failed — using synth fallback:",
+              fetchErr.message,
+            );
+            synthesiseNeigh();
+            return;
+          }
+
+          const source = audioCtx.createBufferSource();
+          source.buffer = buffer;
+          source.playbackRate.value = 0.82 + Math.random() * 0.36;
+
+          /* Ring modulator for robotic effect */
+          const ringOsc = audioCtx.createOscillator();
+          ringOsc.type = "sine";
+          ringOsc.frequency.value = 80 + Math.floor(Math.random() * 160);
+
+          const ringGain = audioCtx.createGain();
+          ringGain.gain.value = 0; /* osc drives this → bipolar AM = ring mod */
+          ringOsc.connect(ringGain.gain);
+
+          /* 45 % dry + 55 % wet — always audible */
+          const dry = audioCtx.createGain();
+          dry.gain.value = 0.45;
+          const wet = audioCtx.createGain();
+          wet.gain.value = 0.55;
+          const master = audioCtx.createGain();
+          master.gain.value = 0.92;
+
+          source.connect(dry);
+          dry.connect(master);
+          source.connect(ringGain);
+          ringGain.connect(wet);
+          wet.connect(master);
+          master.connect(audioCtx.destination);
+
+          ringOsc.start();
+          source.start();
+          source.onended = () => {
+            try {
+              ringOsc.stop();
+            } catch (e) {}
+          };
+        } catch (e) {
+          console.error("Audio error:", e);
+        }
+      }
+
+      function triggerHorse() {
+        console.log("🐴 clicked");
+        horseWrap.classList.remove("neigh");
+        void horseWrap.offsetWidth;
+        horseWrap.classList.add("neigh");
+        horseWrap.addEventListener(
+          "animationend",
+          () => horseWrap.classList.remove("neigh"),
+          { once: true },
+        );
+        playRoboticNeigh();
+      }
+
+      horseWrap.addEventListener("click", triggerHorse);
+      horseWrap.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          triggerHorse();
+        }
+      });
+    </script>
+  </body>
+</html>
