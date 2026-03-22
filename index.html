@@ -78,12 +78,13 @@
       }
 
       .event-info {
-        font-family: "Inter", sans-serif;
+        font-family: "HelveticaNeue", sans-serif;
         font-weight: 400;
         font-size: clamp(0.7rem, 3.5vw, 1.2rem);
         color: #0d0808;
         line-height: 1.25;
         margin-bottom: 1em;
+        text-transform: uppercase;
       }
 
       @font-face {
@@ -103,9 +104,10 @@
       .main-title {
         font-size: clamp(2.8rem, 12.5vw, 8rem);
         color: #0d0808;
-        line-height: 1;
+        line-height: 0.92;
         letter-spacing: -0.02em;
         margin-left: -0.05em;
+        text-transform: uppercase;
       }
 
       .main-title span {
@@ -137,11 +139,13 @@
       const h1 = document.querySelector(".main-title");
       const titleText = h1.textContent.trim();
 
+      const NO_PIXEL = new Set(["ñ", "Ñ"]);
+
       function scrambleFonts() {
         h1.innerHTML = "";
         [...titleText].forEach(ch => {
           if (ch === " ") { h1.appendChild(document.createTextNode(" ")); return; }
-          const f = TITLE_FONTS[Math.floor(Math.random() * 2)];
+          const f = NO_PIXEL.has(ch) ? TITLE_FONTS[1] : TITLE_FONTS[Math.floor(Math.random() * 2)];
           const span = document.createElement("span");
           span.textContent = ch;
           span.style.fontFamily = f.family;
