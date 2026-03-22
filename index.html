@@ -175,32 +175,55 @@
       let audioCtx = null;
       const horseWrap = document.getElementById("horse");
 
+      // ── Color pairs (fg = illustration, bg = body background) ──
+      const COLOR_PAIRS = [
+        { fg: "#E8307A", bg: "#CC1C1C" }, // rojos / rosados
+        { fg: "#F57C00", bg: "#E64A19" }, // naranjas
+        { fg: "#FBC02D", bg: "#F9A825" }, // amarillos cálidos
+        { fg: "#43A047", bg: "#2E7D32" }, // verdes
+        { fg: "#1E88E5", bg: "#1565C0" }, // azules
+        { fg: "#8E24AA", bg: "#6A1B9A" }, // morados
+      ];
+      let currentColorIndex = 0;
+
+      function nextColorIndex() {
+        let n;
+        do {
+          n = Math.floor(Math.random() * COLOR_PAIRS.length);
+        } while (n === currentColorIndex && COLOR_PAIRS.length > 1);
+        return n;
+      }
+
+      function applyColors(colorIndex) {
+        document.body.style.background = COLOR_PAIRS[colorIndex].bg;
+      }
+
       // ── SVG illustration cycling ──────────────────────────────
       const SVG_FILES = ["00", "01", "02", "03", "04", "05"].map(
         (n) => `./svg/Vector${n}.svg`,
       );
-      const svgCache = {};
+      const svgRawCache = {};
       let currentSvgIndex = -1;
 
-      async function fetchAndColorize(url) {
-        if (svgCache[url]) return svgCache[url];
+      async function fetchRaw(url) {
+        if (svgRawCache[url]) return svgRawCache[url];
         const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         let t = await res.text();
-        // Colorize black fills → poster pink
-        t = t.replace(/fill="black"/g, 'fill="#E8307A"');
-        // Responsive sizing
+        // Responsive sizing (color applied separately per load)
         t = t.replace(/\bwidth="[^"]*"/, 'width="100%"');
         t = t.replace(/\bheight="[^"]*"/, 'height="100%"');
         if (!t.includes("preserveAspectRatio"))
           t = t.replace("<svg ", '<svg preserveAspectRatio="xMidYMid meet" ');
-        svgCache[url] = t;
+        svgRawCache[url] = t;
         return t;
       }
 
-      async function loadSVG(index) {
+      async function loadSVG(svgIndex, colorIndex) {
         try {
-          horseWrap.innerHTML = await fetchAndColorize(SVG_FILES[index]);
+          const raw = await fetchRaw(SVG_FILES[svgIndex]);
+          const fg = COLOR_PAIRS[colorIndex].fg;
+          horseWrap.innerHTML = raw.replace(/fill="black"/g, `fill="${fg}"`);
         } catch (e) {
           console.error("SVG load error:", e);
         }
@@ -214,12 +237,12 @@
         return n;
       }
 
-      // Load initial random SVG, then preload the rest
+      // Load initial SVG with default colors, then preload the rest
       (async () => {
         currentSvgIndex = nextSvgIndex();
-        await loadSVG(currentSvgIndex);
+        await loadSVG(currentSvgIndex, currentColorIndex);
         SVG_FILES.forEach((url, i) => {
-          if (i !== currentSvgIndex) fetchAndColorize(url);
+          if (i !== currentSvgIndex) fetchRaw(url);
         });
       })();
 
@@ -332,9 +355,11 @@
           { once: true },
         );
         playRoboticNeigh();
-        // Swap to a different SVG illustration
+        // Swap illustration + color pair
         currentSvgIndex = nextSvgIndex();
-        loadSVG(currentSvgIndex);
+        currentColorIndex = nextColorIndex();
+        applyColors(currentColorIndex);
+        loadSVG(currentSvgIndex, currentColorIndex);
       }
 
       horseWrap.addEventListener("click", triggerHorse);
