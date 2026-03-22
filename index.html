@@ -7,12 +7,18 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
     />
     <title>El año del caballo y otras sustancias</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Libre+Baskerville:ital,wght@0,400;1,400&display=swap"
-      rel="stylesheet"
-    />
+    <style>
+      @font-face {
+        font-family: "ApfelGrotezk";
+        font-weight: 900;
+        font-style: normal;
+        font-display: swap;
+        src:
+          url("./fonts/ApfelGrotezk-Fett.woff2") format("woff2"),
+          url("./fonts/ApfelGrotezk-Fett.woff") format("woff"),
+          url("./fonts/ApfelGrotezk-Fett.otf") format("opentype");
+      }
+    </style>
     <style>
       *,
       *::before,
@@ -120,22 +126,24 @@
       }
 
       .main-title {
-        font-family: "Abril Fatface";
+        font-family: "ApfelGrotezk", sans-serif;
         font-size: clamp(1.6rem, 5.5vw, 4.2rem);
         color: #0d0808;
         line-height: 1;
         text-transform: uppercase;
+        font-style: normal;
       }
 
       .subtitle {
-        font-family: "Libre Baskerville", serif;
-        font-style: italic;
+        font-family: "ApfelGrotezk", sans-serif;
+        font-style: normal;
         font-size: clamp(0.75rem, 2.2vw, 1.7rem);
         color: rgba(13, 8, 8, 0.65);
       }
 
       .event-info {
-        font-family: "Libre Baskerville", serif;
+        font-family: "ApfelGrotezk", sans-serif;
+        font-style: normal;
         font-size: clamp(0.65rem, 1.8vw, 1.3rem);
         color: rgba(13, 8, 8, 0.45);
         margin-top: 0.4em;
