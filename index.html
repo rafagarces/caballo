@@ -531,13 +531,17 @@
         document.getElementById("rec-start").addEventListener("click", startRecording);
       }
 
+      function renderPreCountdown(seconds) {
+        setRecState("precountdown", `
+          <div class="rec-row">
+            <span>La grabación empieza en: ${seconds}</span>
+          </div>`);
+      }
+
       function renderRecording(seconds) {
-        const pct = ((3 - seconds) / 3) * 100;
         setRecState("recording", `
           <div class="rec-row">
-            <span>Grabando…</span>
-            <span class="rec-sep"></span>
-            <span class="rec-countdown-num">${seconds}</span>
+            <span>Grabando: ${seconds}</span>
           </div>`);
       }
 
@@ -587,6 +591,19 @@
       async function startRecording() {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+
+          // Fase 1: pre-cuenta atrás — "La grabación empieza en: 3, 2, 1"
+          let pre = 3;
+          renderPreCountdown(pre);
+          await new Promise(resolve => {
+            const preTimer = setInterval(() => {
+              pre--;
+              if (pre <= 0) { clearInterval(preTimer); resolve(); }
+              else renderPreCountdown(pre);
+            }, 1000);
+          });
+
+          // Fase 2: grabación real — arranca el MediaRecorder
           const mime = ["audio/webm;codecs=opus","audio/webm","audio/mp4"]
             .find(t => MediaRecorder.isTypeSupported(t)) || "";
           mediaRec  = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
