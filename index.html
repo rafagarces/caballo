@@ -352,10 +352,6 @@
       function purgeBadUrl(url) {
         const idx = AUDIO.indexOf(url);
         if (idx !== -1) AUDIO.splice(idx, 1);
-        // Borrar también de la tabla DB para que no vuelva en próximas cargas
-        if (sb && url.includes(SB_URL)) {
-          sb.from("recordings").delete().eq("url", url).then(() => {});
-        }
       }
 
       async function playNeigh(retries = 3) {
