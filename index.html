@@ -532,7 +532,7 @@
       }
 
       function renderRecording(seconds) {
-        const pct = ((2 - seconds) / 2) * 100;
+        const pct = ((3 - seconds) / 3) * 100;
         setRecState("recording", `
           <div class="rec-row">
             <span>Grabando…</span>
@@ -600,7 +600,7 @@
           };
           mediaRec.start(100);
 
-          let t = 2;
+          let t = 3;
           renderRecording(t);
           recTimer = setInterval(() => {
             t--;
